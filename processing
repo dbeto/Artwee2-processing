@@ -1,0 +1,323 @@
+Processing Code: 
+
+import processing.serial.*;
+
+import twitter4j.conf.*;
+import twitter4j.*;
+import twitter4j.auth.*;
+import twitter4j.api.*;
+import java.util.*;
+
+ConfigurationBuilder cb = new ConfigurationBuilder();
+Twitter twitterInstance;
+Query queryForTwitter;
+
+ArrayList tweets;
+int i=0;
+int id;
+int currentTweet;
+
+long lastTweetTime1;
+long lastTweetTime2;
+long lastTweetTime3;
+long lastTweetTime4;
+
+PImage logo;
+
+float secondsSinceLastTweet;
+
+String findString1 = "#Artwee2 we are invisible connections";
+String findString2 = "#Artwee2 DFI";
+String findString3 = "#Artwee2 having fun at invisible connections";
+String findString4 = "#Artwee2 draw me something";
+//String findString5 = "";
+
+//int timer =360;
+
+Serial port;
+
+void setup() {
+println(Serial.list());
+port = new Serial(this, Serial.list()[4], 115200);
+
+cb.setOAuthConsumerKey("z6woXeaVgYRnfe6pFVsWLQ");
+cb.setOAuthConsumerSecret("QkVZMVWLMVDCgWbXMfY525IevxX8VhqATuZeZVOlZo");
+cb.setOAuthAccessToken("2204011964-YezNodjMO0erZy10JhS7EMID3JmyvukEPePi46A");
+cb.setOAuthAccessTokenSecret("4Jj3ZfBy9jlXfbQu02WucxcM6IrOPcN873HNAWgR3oMve");
+
+twitterInstance=new TwitterFactory( cb.build()).getInstance();
+queryForTwitter=new Query("#Artwee2");
+queryForTwitter.setCount(1);
+
+size (1920, 1080);
+FetchTweets();
+thread("refreshTweets");
+
+logo = loadImage("artwee2logo.png");
+
+}
+
+void draw() {
+background(240, 240, 240); 
+DrawTweets();
+}
+
+void DrawTweets() {
+for (i=0; i<tweets.size(); i++) {
+Status t = (Status) tweets.get (i);
+Status s = (Status) tweets.get(currentTweet);
+
+String user = t.getUser().getName();
+String msg = t.getText();
+id = (int) t.getId();
+String incomingText = s.getText();
+
+//secondsSinceLastTweet= ((millis()-lastTweetTime)/1000);
+//println("secondsSinceLastTweet:" +secondsSinceLastTweet);
+//println("lastTweetTime:" +lastTweetTime);
+
+if (incomingText.equals(findString1)) { //)&&(secondsSinceLastTweet<12)){ ///if you find "#Artwee2 draw" type incomingText
+
+lastTweetTime1 += 2*80;
+//lastTweetTime=millis();
+println("lastTweetTime1:" +lastTweetTime1);
+
+if(lastTweetTime1<2000){
+fill(0, 179, 227);
+text(" New tweet has been received, Artweet is drawing your tweet ...", 60+580, 200);
+
+int randomPin1 = int(random(0,3)); //it produces 1 or 2 pin number
+int randomPin2 = int(random(10,40)); //it produces 1 or 2 pin number
+int randTime = int(random(1000, 1200));
+
+println("randomPin:" +randomPin1);
+println("randomPin:" +randomPin2);
+
+port.write(randomPin1);
+delay(randTime);
+
+//port.write(randomPin2);
+//delay(randTime);
+
+}else{
+fill(0, 179, 227);
+text(" Artweet is waiting for new tweet ...", 60+580, 200);
+port.write('L');
+lastTweetTime2=0;
+lastTweetTime3=0;
+lastTweetTime4=0;
+}
+}
+
+
+
+if (incomingText.equals(findString2)) { //)&&(secondsSinceLastTweet<12)){ ///if you find "#Artwee2 draw" type incomingText
+
+lastTweetTime2 += 2*80;
+//lastTweetTime=millis();
+println("lastTweetTime2:" +lastTweetTime2);
+
+if(lastTweetTime2<2000){
+fill(0, 179, 227);
+text(" New tweet has been received, Artweet is drawing your tweet ...", 60+580, 200);
+
+int randomPin1 = int(random(0,3)); //it produces 1 or 2 pin number
+int randomPin2 = int(random(10,40)); //it produces 1 or 2 pin number
+int randTime = int(random(1000, 1200));
+
+println("randomPin:" +randomPin1);
+//println("randomPin:" +randomPin2);
+
+port.write(randomPin1);
+delay(randTime);
+
+}else{ fill(0, 179, 227);
+text(" Artweet is waiting for new tweet ...", 60+580, 200);
+port.write('L');
+lastTweetTime1=0;
+lastTweetTime3=0;
+lastTweetTime4=0;
+}
+} 
+
+if (incomingText.equals(findString3)) { //)&&(secondsSinceLastTweet<12)){ ///if you find "#Artwee2 draw" type incomingText
+
+lastTweetTime3 += 2*80;
+//lastTweetTime=millis();
+println("lastTweetTime3:" +lastTweetTime3);
+
+if(lastTweetTime3<2000){
+fill(0, 179, 227);
+text(" New tweet has been received, Artweet is drawing your tweet ...", 60+580, 200);
+
+int randomPin1 = int(random(0,3)); //it produces 1 or 2 pin number
+int randomPin2 = int(random(10,40)); //it produces 1 or 2 pin number
+int randTime = int(random(1000, 1200));
+
+println("randomPin:" +randomPin1);
+println("randomPin:" +randomPin2);
+
+port.write(randomPin1);
+delay(randTime);
+}else{ fill(0, 179, 227);
+text(" Artweet is waiting for new tweet ...", 60+580, 200);
+port.write('L');
+lastTweetTime2=0;
+lastTweetTime1=0;
+lastTweetTime4=0;
+}
+} 
+
+
+if (incomingText.equals(findString4)) { //)&&(secondsSinceLastTweet<12)){ ///if you find "#Artwee2 draw" type incomingText
+
+lastTweetTime4 += 2*50;
+//lastTweetTime=millis();
+println("lastTweetTime4:" +lastTweetTime4);
+
+if(lastTweetTime4<2000){
+fill(0, 179, 227);
+text(" New tweet has been received, Artweet is drawing your tweet ...", 60+580, 200);
+
+int randomPin1 = int(random(0,3)); //it produces 1 or 2 pin number
+int randomPin2 = int(random(10,40)); //it produces 1 or 2 pin number
+int randTime = int(random(1000, 1200));
+
+println("randomPin:" +randomPin1);
+println("randomPin:" +randomPin2);
+
+port.write(randomPin1);
+delay(randTime);
+}else{ fill(0, 179, 227);
+text(" Artweet is waiting for new tweet ...", 60+580, 200);
+port.write('L');
+lastTweetTime3=0;
+lastTweetTime2=0;
+lastTweetTime1=0;
+}
+}
+
+
+Date d = t.getCreatedAt();
+println("Tweet by " + user + " at " + d + ": " + msg + id);
+
+println(user + ": " + msg);
+println(tweets.size());
+
+TeamName();
+Instruction();
+
+///Tweet by
+fill(130,130,130);
+textSize(16);
+stroke(2);
+text("Tweet by", 60+580, 60+400);
+noFill();
+
+//user and id
+fill(110,110,110);
+textSize(28);
+text(user, 60+580, 90+400);
+noFill();
+
+textSize(16);
+fill(130,130,130);
+stroke(2);
+text("Tweet", 60+580, 120+400);
+noFill();
+
+fill(110,110,110);
+textSize(28);
+text(msg, 60+580,150+400);
+noFill();
+
+fill(110,110,110);
+textSize(16);
+text("on"+ " " + d, 60+580,180+400);
+noFill();
+}
+}
+
+///////////////////////////////////////////////
+
+void FetchTweets() {
+try {
+println ("Searching.... Current time = " + hour() + ":" + minute() + ":" + second());
+QueryResult result = twitterInstance.search(queryForTwitter);
+tweets = (ArrayList) result.getTweets();
+} 
+catch (TwitterException te) {
+println("Couldn't connect: " + te);
+}//end of catch
+}//end of Fetch
+
+void refreshTweets() {
+while (true)
+{
+FetchTweets();
+
+println("Updated Tweets"); 
+
+delay(3000);
+}
+}
+
+void TeamName(){
+
+//line 1 
+stroke(3);
+fill(130,130,130);
+line(600, 40, 600, 1020);
+noFill();
+
+fill(130,130,130);
+textSize(16);
+stroke(3);
+text(" System Status ", 60+580, 180);
+noFill();
+
+fill(0, 179, 227);
+textSize(24);
+text("Artwee2", 60+580, 350+600);
+noFill();
+fill(110,110,110);
+textSize(16);
+text("By Ardavan Mirhosseini & Humberto Aldaz", 60+580 , 370+600);
+}
+
+void Instruction(){
+stroke(3);
+fill(0, 179, 227);
+line(600+650, 40, 600+650, 640);
+noFill();
+
+fill(0, 179, 227);
+textSize(16);
+stroke(3);
+text(" Instructions : ", 60+580+650, 180);
+noFill();
+
+fill(130,130,130);
+textSize(16);
+text(" You can only Tweet the phrases below :", 60+580+650, 200);
+noFill();
+
+fill(110,110,110);
+textSize(20);
+text("(1) #Artwee2 we are invisible connections", 60+580+650+30, 230);
+text("(2) #Artwee2 DFI", 60+580+650+30, 260);
+text("(3) #Artwee2 having fun at invisible connections", 60+580+650+30, 290);
+text("(4) #Artwee2 draw me something", 60+580+650+30, 320);
+
+
+fill(130,130,130);
+textSize(16);
+text(" Note: Please be advised that you can NOT tweet the very last Tweet", 60+580+650, 460);
+text(" in machine's memory. Please choose another tweet from the", 60+580+650, 480);
+text(" options above.", 60+580+650, 500);
+noFill();
+
+///logo
+image(logo, 100,800, 350,270);
+
+}
